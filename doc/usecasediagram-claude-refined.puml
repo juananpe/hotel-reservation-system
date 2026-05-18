@@ -1,0 +1,43 @@
+@startuml UseCases
+title Use Case Diagram — Hotel Chain Reservation System (refined)
+left to right direction
+skinparam packageStyle rectangle
+
+actor "User"     as User
+actor "Customer" as Customer
+actor "Worker"   as Worker
+actor "Bank"     as Bank
+
+' Customer is also a User (can do everything a User can)
+Customer --|> User
+
+rectangle "Hotel Reservation System" {
+  usecase "Query available rooms" as UC_Query
+  usecase "Register"              as UC_Register
+  usecase "Reserve room"          as UC_Reserve
+  usecase "Join waiting list"     as UC_Wait
+  usecase "Check-in"              as UC_CheckIn
+  usecase "Check-out"             as UC_CheckOut
+}
+
+' --- User ---
+User     --> UC_Query
+User     --> UC_Register
+
+' --- Customer (registered user) ---
+Customer --> UC_Reserve
+
+' --- Worker ---
+Worker   --> UC_CheckIn
+Worker   --> UC_CheckOut
+
+' --- Extends: arrowhead points from extending UC to base UC ---
+UC_Register ..> UC_Query   : <<extend>>\n(if user wants to reserve)
+UC_Reserve  ..> UC_Query   : <<extend>>\n(if user wants to reserve)
+UC_Wait     ..> UC_Reserve : <<extend>>\n(no rooms available)
+
+' --- Bank involved at every payment moment ---
+UC_Reserve  --> Bank
+UC_CheckIn  --> Bank
+UC_CheckOut --> Bank
+@enduml

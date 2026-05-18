@@ -1,0 +1,39 @@
+Una cadena hotelera quiere realizar una aplicación para gestionar las
+reservas y pagos de sus habitaciones.
+
+La cadena está compuesta por una serie de hoteles cada uno con sus
+correspondientes habitaciones. Cada hotel está ubicado en una dirección
+y está descrito a través de unos datos (nombre, categoría, teléfono,
+correo y web).
+
+Los precios de las habitaciones son variables y dependen del hotel y de
+las fechas de alquiler. Por ejemplo, en los hoteles de Pamplona, los
+precios de las habitaciones se disparan en San Fermín. Cada habitación
+es de tipo “simple”, “doble”, “triple” y “suite”. Todas las habitaciones
+del mismo tipo (p.ej “doble”) que hay en un hotel tendrán en mismo
+precio el mismo día.
+
+Cualquier usuario puede realizar consultas indicando el hotel, el tipo
+de habitación y las fechas de la reserva, sin embargo, si quiere
+formalizar la reserva deberá registrarse. El sistema visualizará
+únicamente los tipos de habitaciones para los que haya habitaciones
+disponibles para esas fechas, indicando el precio total de la reserva.
+
+Los usuarios registrados puede realizar la reserva de un tipo de
+habitación (p.ej “doble”) para unas fechas determinadas, siempre cuando
+exista una habitación disponible de ese tipo en las fechas solicitadas.
+Para formalizar la reserva deberá realizar un pago adelantado del 20% de
+la reserva indicando su tarjeta de crédito. En caso de que no haya
+disponibles, si lo desea, puede colocarse en lista de espera.
+
+El día de la entrada (“check-in”), el trabajador del hotel entregará las
+tarjetas de acceso a la habitación al cliente, realizará el cobro del
+80% restante a través de la tarjeta bancaría y grabará la fecha de
+entrada.
+
+Cuando el cliente abandone el hotel (“check-out”), registrará la fecha
+de entrega. En caso de que se devuelva fuera del plazo de la reserva
+(salida máxima 13:00pm), se deberá abonar el precio por día adicional
+establecido para ese tipo de habitación. El cobro se realizará a través
+de la tarjeta bancaría del cliente. Estos datos son diferentes en cada
+hotel.
