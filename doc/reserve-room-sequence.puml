@@ -1,0 +1,163 @@
+@startuml "Book/Reserve a Room — Main Flow Sequence Diagram"
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 240
+
+title **Book/Reserve a Room — Main Flow**\n(Load hotels → Search availability → Select room type → Reserve)
+
+actor "Guest / Registered User" as User
+participant "UI" as UI
+participant "BlFacade\n(businessLogic)" as BL
+participant "DataAccess\n(dataAccess)" as DA
+participant "EntityManager\n(em)" as EM
+participant "Hotel" as Hotel
+participant "Room" as Room
+participant "Reservation" as Res
+
+' ========================================================================
+' PHASE 0 — Load Hotels (startup)
+' ========================================================================
+
+== Phase 0: Load Hotels (startup) ==
+
+UI -> BL : getHotels()
+activate BL
+
+BL -> DA : getHotels()
+activate DA
+
+DA -> EM : createQuery(Q0)
+note right #E3F2FD
+    **Q0:** SELECT h FROM Hotel h
+end note
+EM --> DA : List⟨Hotel⟩
+deactivate DA
+
+BL --> UI : List⟨Hotel⟩
+deactivate BL
+
+UI -> UI : Populates hotel ComboBox\n(hotel objects cached in UI)
+
+' ========================================================================
+' PHASE 1 — Search Availability
+' ========================================================================
+
+== Phase 1: Search Availability ==
+
+User -> UI : Selects hotel from ComboBox
+User -> UI : Picks start date & end date (DatePickers)
+User -> UI : Clicks «Search» button
+
+UI -> BL : getAvailableRooms(hotel, startDate, endDate)
+activate BL
+
+BL -> Hotel : getRoomTypes()
+activate Hotel
+Hotel --> BL : List\u27E8HotelRoomType\u27E9
+deactivate Hotel
+
+loop For each HotelRoomType at this hotel
+
+    BL -> DA : countAvailableRooms(hotel, roomType, AVAILABLE)
+    activate DA
+
+    DA -> EM : createQuery(Q1)
+    note right #E3F2FD
+        **Q1:** SELECT COUNT(r) FROM Room r
+             WHERE r.hotel = :hotel
+               AND r.roomType = :roomType
+               AND r.status = :status
+    end note
+    EM --> DA : availableCount (Long)
+    deactivate DA
+
+    alt availableCount > 0
+
+        loop For each day in [startDate .. endDate)
+
+            BL -> DA : getRateForDate(hotelRoomType, day)
+            activate DA
+
+            DA -> EM : createQuery(Q2)
+            note right #E3F2FD
+                **Q2:** SELECT r FROM Rate r
+                     WHERE r.hotelRoomType = :hotelRoomType
+                       AND r.startDate <= :day
+                       AND r.endDate >= :day
+            end note
+            EM --> DA : Rate (daily price)
+            deactivate DA
+
+        end
+
+    end
+
+end
+
+BL --> UI : List⟨AvailableRoomModel⟩
+deactivate BL
+
+' ========================================================================
+' PHASE 2 — Reserve Room
+' ========================================================================
+
+== Phase 2: Reserve Room ==
+
+User -> UI : Selects a room type row in the TableView
+
+User -> UI : Clicks «Reserve» button
+
+UI -> BL : reserveRoom(hotel, selectedRoom, startDate, endDate)
+activate BL
+
+BL -> DA : reserveRoom(hotel, roomType, startDate, endDate, currentUser)
+activate DA
+
+DA -> EM : getTransaction().begin()
+
+DA -> EM : createQuery(Q3)
+note right #E3F2FD
+    **Q3:** SELECT r FROM Room r
+         WHERE r.hotel = :hotel
+           AND r.roomType = :roomType
+           AND r.status = :status
+    (maxResults = 1)
+end note
+EM --> DA : Room (single available room)
+
+DA -> Res : new()
+activate Res
+DA -> Res : setReservationCode("RES-" + now())
+DA -> Res : setReservationStart(startDate)
+DA -> Res : setReservationEnd(endDate)
+DA -> Res : setRoom(availableRoom)
+DA -> Res : setCustomer(currentUser)
+DA -> Res : setAmountDue(totalPrice)
+DA -> Res : setAmountPaid(totalPrice × 0.20)
+deactivate Res
+
+DA -> Room : setStatus(RESERVED)
+activate Room
+deactivate Room
+
+DA -> EM : persist(reservation)
+
+DA -> EM : getTransaction().commit()
+
+DA --> BL : void (success)
+deactivate DA
+
+note over BL #FFF9C4
+    **Banking System** (secondary actor):
+    20% upfront payment processed via
+    external payment gateway.
+    (Currently simulated — amountPaid
+    recorded without external call.)
+end note
+
+BL --> UI : void (success)
+deactivate BL
+
+@enduml
