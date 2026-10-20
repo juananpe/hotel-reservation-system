@@ -19,3 +19,7 @@ Thumbs.db
 # H2 database files (local)
 *.mv.db
 *.trace.db
+
+node_modules/
+package-lock.json
+package.json
