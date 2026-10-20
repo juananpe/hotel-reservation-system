@@ -3,6 +3,12 @@ package eus.ehu.hotelreservation.domain;
 import jakarta.persistence.*;
 import java.util.List;
 
+/**
+ * Represents a physical room within a {@link Hotel}.
+ * <p>
+ * Each room has a unique number, a {@link RoomType} and a {@link RoomStatus}
+ * that indicates whether it is available, reserved, occupied, etc.
+ */
 @Entity
 public class Room {
     @Id

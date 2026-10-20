@@ -15,6 +15,14 @@ import javafx.util.StringConverter;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * FXML controller for the <em>Reserve Room</em> view.
+ * <p>
+ * Handles user interactions for searching available rooms, making
+ * reservations (with 20% upfront payment) and joining the waiting list.
+ * Receives the {@link BlFacade} through constructor injection so that
+ * the controller remains decoupled from the concrete facade implementation.
+ */
 public class ReserveRoomController {
 
     private BlFacade bl;
@@ -183,6 +191,15 @@ public class ReserveRoomController {
         totalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
     }
 
+    /**
+     * Searches for available room types at the selected hotel and date range,
+     * then populates the results table.
+     * <p>
+     * Validates that a hotel and both dates are selected and that the start
+     * date is before the end date before querying the business layer.
+     *
+     * @param event the action event triggered by the Search button
+     */
     @FXML
     void searchAvailability(ActionEvent event) {
         Hotel hotel = hotelComboBox.getValue();
@@ -209,6 +226,11 @@ public class ReserveRoomController {
         }
     }
 
+    /**
+     * Constructs the controller with the given business-logic facade.
+     *
+     * @param bl the {@link BlFacade} used to execute business operations
+     */
     public ReserveRoomController(BlFacade bl) {
         this.bl = bl;
     }

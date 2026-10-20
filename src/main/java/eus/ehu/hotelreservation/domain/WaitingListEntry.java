@@ -3,6 +3,13 @@ package eus.ehu.hotelreservation.domain;
 import jakarta.persistence.*;
 import java.util.Date;
 
+/**
+ * Represents an entry on the waiting list, created when a customer
+ * requests a room type that is not currently available.
+ * <p>
+ * Stores the desired hotel, room type, date range and the customer
+ * who requested it. A unique entry code is generated at creation time.
+ */
 @Entity
 public class WaitingListEntry {
     @Id

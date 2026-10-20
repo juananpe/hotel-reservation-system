@@ -3,6 +3,13 @@ package eus.ehu.hotelreservation.domain;
 import jakarta.persistence.*;
 import java.util.List;
 
+/**
+ * Represents a hotel belonging to the chain.
+ * <p>
+ * Contains basic contact information (name, category, address, phone,
+ * email) and is associated with a collection of {@link Room rooms}
+ * and {@link HotelRoomType hotel-room-type} pricing associations.
+ */
 @Entity
 public class Hotel {
     @Id

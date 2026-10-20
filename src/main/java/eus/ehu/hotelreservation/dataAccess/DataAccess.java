@@ -16,7 +16,15 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Implements the Data Access utility using Hibernate / JPA with H2.
+ * Data-access layer built on Hibernate / JPA with an embedded H2 database.
+ * <p>
+ * Manages the {@link EntityManager} lifecycle and exposes CRUD operations
+ * for the domain entities ({@link Hotel}, {@link Room},
+ * {@link Reservation}, {@link WaitingListEntry}, etc.).
+ * Supports an <em>initialize</em> mode that drops and recreates the schema
+ * with test data on startup.
+ *
+ * @see Config
  */
 public class DataAccess {
 
@@ -29,6 +37,12 @@ public class DataAccess {
         this.open();
     }
 
+    /**
+     * Opens a connection to the database using the configuration defined
+     * in {@code hibernate.cfg.xml} and {@code config.properties}.
+     * <p>
+     * Equivalent to calling {@link #open(boolean)} with {@code false}.
+     */
     public void open() {
         open(false);
     }
@@ -57,6 +71,9 @@ public class DataAccess {
         db.getTransaction().commit();
     }
 
+    /**
+     * Closes the {@link EntityManager} and releases database resources.
+     */
     public void close() {
         db.close();
         System.out.println("DataBase is closed");
@@ -64,6 +81,16 @@ public class DataAccess {
 
     // ==================== Initialization ====================
 
+    /**
+     * Initializes the database schema and populates it with sample data.
+     * <p>
+     * This method is intended to be called once at application startup when
+     * {@code db.openmode=initialize} in {@code config.properties}. It creates
+     * room types, hotels, rooms, rates and test customers inside a single
+     * JPA transaction.
+     *
+     * @see #generateTestingData()
+     */
     public void initializeDB() {
         try {
             db.getTransaction().begin();
@@ -309,10 +336,21 @@ public class DataAccess {
 
     // ==================== Queries ====================
 
+    /**
+     * Retrieves all hotels from the database.
+     *
+     * @return a list of all {@link Hotel} entities
+     */
     public List<Hotel> getHotels() {
         return db.createQuery("SELECT h FROM Hotel h", Hotel.class).getResultList();
     }
 
+    /**
+     * Looks up a customer by national ID.
+     *
+     * @param nationalId the customer's national identity document number
+     * @return the matching {@link Customer}, or {@code null} if not found
+     */
     public Customer getCustomer(String nationalId) {
         return db.find(Customer.class, nationalId);
     }

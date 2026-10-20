@@ -13,4 +13,9 @@ module eus.ehu.hotelreservation {
     exports eus.ehu.hotelreservation.model to org.hibernate.orm.core;
     opens eus.ehu.hotelreservation.ui to javafx.fxml;
     exports eus.ehu.hotelreservation.ui;
+
+    // Internal packages — opened for reflection and documentation
+    opens eus.ehu.hotelreservation.businessLogic;
+    opens eus.ehu.hotelreservation.configuration;
+    opens eus.ehu.hotelreservation.dataAccess;
 }

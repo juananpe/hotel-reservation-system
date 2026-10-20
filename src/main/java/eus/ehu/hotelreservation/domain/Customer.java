@@ -3,6 +3,13 @@ package eus.ehu.hotelreservation.domain;
 import jakarta.persistence.*;
 import java.util.List;
 
+/**
+ * Represents a hotel customer identified by national ID.
+ * <p>
+ * A customer may have multiple {@link Reservation reservations} and
+ * {@link WaitingListEntry waiting-list entries}, and stores a credit
+ * card number for advance payments.
+ */
 @Entity
 public class Customer {
     @Id

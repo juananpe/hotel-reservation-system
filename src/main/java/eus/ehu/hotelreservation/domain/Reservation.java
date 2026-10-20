@@ -3,6 +3,13 @@ package eus.ehu.hotelreservation.domain;
 import jakarta.persistence.*;
 import java.util.Date;
 
+/**
+ * Represents a hotel room reservation made by a {@link Customer}.
+ * <p>
+ * Stores the date range, the assigned room, the amount due and the
+ * amount already paid (20% upfront). A unique reservation code is
+ * generated at creation time.
+ */
 @Entity
 public class Reservation {
     @Id

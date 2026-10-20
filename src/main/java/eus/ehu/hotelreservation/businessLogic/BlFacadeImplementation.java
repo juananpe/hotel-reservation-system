@@ -10,7 +10,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Implements the business logic as a singleton.
+ * Singleton implementation of the business-logic facade.
+ * <p>
+ * Provides the application layer with high-level operations such as
+ * searching available rooms, making reservations and joining the
+ * waiting list. Internally delegates to {@link DataAccess} for
+ * persistence and keeps track of the currently logged-in customer.
+ *
+ * @see BlFacade
  */
 public class BlFacadeImplementation implements BlFacade {
 
@@ -20,6 +27,11 @@ public class BlFacadeImplementation implements BlFacade {
 
     private static BlFacadeImplementation bl = new BlFacadeImplementation();
 
+    /**
+     * Returns the singleton instance of the business-logic facade.
+     *
+     * @return the unique {@link BlFacadeImplementation} instance
+     */
     public static BlFacadeImplementation getInstance() {
         return bl;
     }

@@ -5,6 +5,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Singleton that loads and exposes application configuration from
+ * {@code config.properties}.
+ * <p>
+ * Provides access to database-related settings such as the open mode
+ * (initialize vs. reuse existing schema), the database name, and
+ * whether the data-access layer is local or remote.
+ */
 public class Config {
 
     private Properties prop;
